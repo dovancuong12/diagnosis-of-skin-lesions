@@ -1,1 +1,104 @@
-# TODO: docker-compose cho api, worker, redis, postgres, minio, nginx
+services:
+  # Database
+  db:
+    image: postgres:13-alpine
+    container_name: skin_lesion_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-skin_lesion}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  # Redis for Celery
+  redis:
+    image: redis:7-alpine
+    container_name: skin_lesion_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 3
+    networks:
+      - app-network
+
+  # Backend API
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: skin_lesion_api
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-skin_lesion}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../backend:/app
+      - ./migrations:/app/migrations
+    networks:
+      - app-network
+
+  # Celery Worker
+  worker:
+    build:
+      context: ../worker
+      dockerfile: Dockerfile
+    container_name: skin_lesion_worker
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - ../.env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-skin_lesion}
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ../backend:/app
+      - ./migrations:/app/migrations
+    command: celery -A infer_workers worker --loglevel=info
+    networks:
+      - app-network
+
+  # Nginx (reverse proxy)
+  nginx:
+    image: nginx:alpine
+    container_name: skin_lesion_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ../frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  app-network:
+    driver: bridge
