@@ -1,127 +1,123 @@
-# Skin Lesion Diagnosis System
+# Skin Lesion Diagnosis API
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.68.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18.2-61DAFB.svg?logo=react)](https://reactjs.org/)
+API backend cho hệ thống chẩn đoán tổn thương da bằng AI. Hệ thống cho phép người dùng upload hình ảnh tổn thương da và nhận kết quả chẩn đoán từ mô hình AI.
 
-A deep learning-based skin lesion diagnosis system using EfficientNetB3 model, allowing users to upload one or multiple images for automated diagnosis.
+## Cài đặt
 
-## Key Features
-
-- Support for single or batch image uploads
-- Automatic detection and diagnosis of skin lesions
-- Parallel processing of multiple images for improved accuracy
-- Case-based chat history system
-- Multi-user support with role-based access control
-- Optimized UI with light/dark mode
-
-## System Architecture
-
-```
-diagnosis-of-skin-lesions/
-├── backend/               # FastAPI backend
-│   ├── app/               
-│   │   ├── api/           # API endpoints
-│   │   ├── core/          # Core configuration
-│   │   ├── db/            # Database connections
-│   │   ├── models/        # SQLAlchemy models
-│   │   └── services/      # Business logic
-│   └── requirements.txt   # Python dependencies
-│
-├── frontend/              # React frontend
-│   ├── public/
-│   └── src/
-│       ├── components/    # React components
-│       ├── pages/         # Main pages
-│       └── services/      # API clients
-│
-├── models/                # Trained models
-├── training/              # Training scripts
-├── data_pipeline/         # Data processing
-├── infra/                 # Deployment config
-└── tests_e2e/             # Automated tests
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.9+
-- PostgreSQL 13+
-- Docker (recommended)
-
-### Installation with Docker (Recommended)
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/dovancuong12/diagnosis-of-skin-lesions.git
-   cd diagnosis-of-skin-lesions
-   ```
-
-2. Create `.env` file from example:
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Start the services:
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Access the application at: http://localhost:3000
-
-### Manual Installation
-
-#### Backend
-
+1. Cài đặt các thư viện cần thiết:
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload
 ```
 
-#### Frontend
+2. Cấu hình biến môi trường trong file `.env`
+
+3. Khởi tạo cơ sở dữ liệu:
+```bash
+python -c "from scripts.init_db import init_db; init_db()"
+```
+
+4. Chạy ứng dụng:
+```bash
+uvicorn main:app --reload
+```
+
+## Cấu trúc dự án
+
+```
+skin-lesion-diagnosis/
+├── main.py                 # Ứng dụng FastAPI chính
+├── models/                 # Mô hình cơ sở dữ liệu SQLAlchemy
+│   ├── __init__.py
+│   ├── database.py         # Cấu hình cơ sở dữ liệu
+│   ├── user.py            # Mô hình người dùng
+│   └── diagnosis.py       # Mô hình yêu cầu chẩn đoán
+├── schemas/                # Schema Pydantic cho validation
+│   ├── __init__.py
+│   ├── user.py            # Schema người dùng
+│   └── diagnosis.py       # Schema chẩn đoán
+├── api/                    # Các router API
+│   ├── __init__.py
+│   ├── deps.py            # Dependencies (database session)
+│   └── routers/
+│       ├── __init__.py
+│       ├── users.py       # Router người dùng
+│       └── diagnosis.py   # Router chẩn đoán
+├── ml_model/               # Mô hình học máy
+│   ├── __init__.py
+│   └── predictor.py       # Lớp dự đoán
+├── core/                   # Xử lý chính
+│   ├── __init__.py
+│   └── diagnosis_processor.py
+├── scripts/                # Script hỗ trợ
+│   ├── __init__.py
+│   └── init_db.py         # Khởi tạo cơ sở dữ liệu
+└── uploads/                # Thư mục lưu trữ ảnh upload
+```
+
+## API Endpoints
+
+### Người dùng
+
+- `POST /api/v1/users/` - Tạo người dùng mới
+- `GET /api/v1/users/{user_id}` - Lấy thông tin người dùng
+- `GET /api/v1/users/{user_id}/diagnoses` - Lấy lịch sử chẩn đoán của người dùng
+
+### Chẩn đoán
+
+- `POST /api/v1/diagnosis/` - Upload ảnh và tạo yêu cầu chẩn đoán
+- `GET /api/v1/diagnosis/{request_id}` - Lấy kết quả chẩn đoán
+- `PUT /api/v1/diagnosis/{request_id}` - Cập nhật kết quả chẩn đoán
+- `GET /api/v1/diagnosis/user/{user_id}` - Lấy tất cả yêu cầu chẩn đoán của người dùng
+
+## Cách sử dụng
+
+### Tạo người dùng
 
 ```bash
-cd frontend
-npm install
-npm run dev
+curl -X POST "http://localhost:8000/api/v1/users/" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
+    "email": "test@example.com",
+    "full_name": "Test User"
+  }'
 ```
 
-## API Documentation
-
-View detailed API documentation at: `http://localhost:8000/docs`
-
-## Running Tests
+### Upload ảnh để chẩn đoán
 
 ```bash
-# Backend tests
-cd backend
-pytest
-
-# Frontend tests
-cd frontend
-npm test
+curl -X POST "http://localhost:8000/api/v1/diagnosis/?user_id=1" \
+  -H "Content-Type: multipart/form-data" \
+  -F "image=@path/to/your/image.jpg"
 ```
 
-## Contributing
+### Lấy kết quả chẩn đoán
 
-Contributions are always welcome! Please read our [contribution guidelines](CONTRIBUTING.md) for details.
+```bash
+curl -X GET "http://localhost:8000/api/v1/diagnosis/1"
+```
 
-## License
+## Cơ sở dữ liệu
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Hệ thống sử dụng PostgreSQL với các bảng:
 
-## Acknowledgments
+- `users`: Lưu thông tin người dùng
+- `diagnosis_requests`: Lưu yêu cầu chẩn đoán, bao gồm:
+  - ID người dùng
+  - Đường dẫn ảnh
+  - Kết quả chẩn đoán
+  - Độ tin cậy
+  - Thời gian yêu cầu và hoàn thành
+  - Trạng thái (pending, processing, completed, failed)
 
-- Thanks to all [contributors](https://github.com/dovancuong12/diagnosis-of-skin-lesions/graphs/contributors) who helped with this project.
-- Model trained using the [ISIC 2020 dataset](https://challenge.isic-archive.com/landing/2020/).
+## Mô hình AI
 
-## Contact
+Mô hình được tích hợp trong thư mục `ml_model/` sử dụng ONNX Runtime để thực hiện dự đoán. Trong phiên bản mô phỏng này, mô hình trả về kết quả ngẫu nhiên từ các lớp tổn thương da phổ biến.
 
-Do Van Cuong - dovancuong3636@gmail.com
+## Tính năng chính
 
-Project Link: [https://github.com/dovancuong12/diagnosis-of-skin-lesions](https://github.com/dovancuong12/diagnosis-of-skin-lesions)
+- Quản lý người dùng
+- Upload và lưu trữ hình ảnh
+- Tích hợp mô hình AI cho chẩn đoán
+- Theo dõi lịch sử chẩn đoán
+- API RESTful dễ tích hợp
