@@ -1,0 +1,60 @@
+# Cấu hình huấn luyện baseline cho EfficientNetB3
+model:
+  name: "tf_efficientnet_b3_ns"
+  num_classes: 9  # Số lớp bệnh trong dataset
+  pretrained: true
+  in_chans: 3
+  drop_rate: 0.3
+  drop_path_rate: 0.2
+
+data:
+  batch_size: 32
+  num_workers: 4
+  pin_memory: true
+  train_ratio: 0.8
+  val_ratio: 0.2
+
+training:
+  epochs: 50
+  learning_rate: 0.001
+  min_lr: 1.0e-06
+  weight_decay: 0.01
+  momentum: 0.9
+  scheduler:
+    name: "cosine"
+    warmup_epochs: 5
+    warmup_lr: 1.0e-06
+  
+  optimizer:
+    name: "adamw"
+    betas: [0.9, 0.999]
+    eps: 1.0e-08
+
+loss:
+  name: "cross_entropy"
+  label_smoothing: 0.1
+
+augmentation:
+  # Augmentation trong huấn luyện
+  train:
+    resize: [256, 256]
+    crop_size: [224, 224]
+    hflip: 0.5
+    vflip: 0.1
+    rotate: 10
+    color_jitter: [0.2, 0.2, 0.2, 0.1]
+    auto_augment: "rand-m9-mstd0.5-inc1"
+    interpolation: "random"
+    re_prob: 0.25
+    re_mode: "pixel"
+    re_count: 1
+  # Augmentation trong validation
+  val:
+    resize: [256, 256]
+    crop_size: [224, 224]
+
+logging:
+  log_interval: 10
+  save_checkpoint: true
+  checkpoint_dir: "./checkpoints"
+  experiment_name: "effb3_baseline"
