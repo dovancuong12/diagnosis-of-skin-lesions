@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { PhotoIcon, XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { ImageFile } from '../types';
-import { validateFileType, validateFileSize, formatFileSize, createImagePreview, generateId } from '../utils';
-import { UPLOAD_CONFIG } from '../constants';
+import { ImageFile } from '../../types';
+import { validateFileType, validateFileSize, formatFileSize, createImagePreview, generateId } from '../../utils';
+import { UPLOAD_CONFIG } from '../../constants';
 import toast from 'react-hot-toast';
 
 interface UploadAreaProps {

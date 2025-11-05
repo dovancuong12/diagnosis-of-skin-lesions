@@ -5,9 +5,9 @@ import {
   InformationCircleIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
-import { Case, Prediction, ClassPrediction } from '../types';
-import { getClassInfo, formatConfidence } from '../utils';
-import { SKIN_LESION_CLASSES } from '../constants';
+import { Case, Prediction, ClassPrediction } from '../../types';
+import { getClassInfo, formatConfidence } from '../../utils';
+import { SKIN_LESION_CLASSES } from '../../constants';
 
 interface CaseFusionPanelProps {
   caseData: Case;

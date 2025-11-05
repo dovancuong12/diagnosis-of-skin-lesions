@@ -6,10 +6,10 @@ import {
   CheckCircleIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
-import { CaseImage, Prediction } from '../types';
-import { getClassInfo, formatConfidence, formatDate } from '../utils';
-import QCIndicator from './QCIndicator';
-import HeatmapOverlay from './HeatmapOverlay';
+import { CaseImage, Prediction } from '../../types';
+import { getClassInfo, formatConfidence, formatDate } from '../../utils';
+import QCIndicator from '../../components/QCIndicator';
+import HeatmapOverlay from '../../components/HeatmapOverlay';
 
 interface ImageCardProps {
   image: CaseImage;

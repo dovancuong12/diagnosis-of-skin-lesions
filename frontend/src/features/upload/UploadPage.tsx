@@ -4,10 +4,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { ImageFile, UploadFormData, PredictionJob } from '../types';
-import { apiClient } from '../lib/api';
-import { API_ENDPOINTS } from '../constants';
-import UploadArea from '../components/UploadArea';
+import { ImageFile, UploadFormData, PredictionJob } from '../../types';
+import { apiClient } from '../../lib/api';
+import { API_ENDPOINTS } from '../../constants';
+import UploadArea from './UploadArea';
 import toast from 'react-hot-toast';
 
 const schema = yup.object({

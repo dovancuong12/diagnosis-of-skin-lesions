@@ -2,10 +2,9 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   XCircleIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 import { QualityControlResults } from '../types';
-import { getQCStatusColor, getQCStatusLabel } from '../utils';
 
 interface QCIndicatorProps {
   qcResults: QualityControlResults;
@@ -43,12 +42,22 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
     }
   };
 
+  const getStatusLabel = () => {
+    if (!qcResults.isAcceptable) {
+      return 'Poor Quality';
+    }
+    if (qcResults.warnings.length > 0) {
+      return 'Fair Quality';
+    }
+    return 'Good Quality';
+  };
+
   if (compact) {
     return (
       <div className="flex items-center space-x-2">
         {getStatusIcon()}
-        <span className={`text-sm font-medium ${getQCStatusColor(qcResults)}`}>
-          {getQCStatusLabel(qcResults)}
+        <span className="text-sm font-medium">
+          {getStatusLabel()}
         </span>
       </div>
     );
@@ -62,8 +71,8 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
         </h3>
         <div className="flex items-center space-x-2">
           {getStatusIcon()}
-          <span className={`text-sm font-medium ${getQCStatusColor(qcResults)}`}>
-            {getQCStatusLabel(qcResults)}
+          <span className="text-sm font-medium">
+            {getStatusLabel()}
           </span>
         </div>
       </div>
@@ -93,7 +102,13 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
 
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600 dark:text-gray-400">Contrast</span>
-              <span className={`text-sm font-medium ${getMetricColor(qcResults.contrast, 'contrast')}`}>
+              <span className={`text-sm font-medium ${
+                qcResults.contrast < 0.1
+                  ? 'text-red-500'
+                  : qcResults.contrast < 0.3
+                  ? 'text-yellow-500'
+                  : 'text-green-500'
+              }`}>
                 {qcResults.contrast.toFixed(2)}
               </span>
             </div>
@@ -112,7 +127,13 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
 
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600 dark:text-gray-400">Sharpness</span>
-              <span className={`text-sm font-medium ${getMetricColor(qcResults.blur, 'blur')}`}>
+              <span className={`text-sm font-medium ${
+                qcResults.blur > 100
+                  ? 'text-red-500'
+                  : qcResults.blur < 200
+                  ? 'text-yellow-500'
+                  : 'text-green-500'
+              }`}>
                 {qcResults.blur.toFixed(0)}
               </span>
             </div>
@@ -140,7 +161,7 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
                     Quality Warnings
                   </h4>
                   <ul className="mt-1 text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
-                    {qcResults.warnings.map((warning, index) => (
+                    {qcResults.warnings.map((warning: string, index: number) => (
                       <li key={index}>• {warning}</li>
                     ))}
                   </ul>
@@ -170,5 +191,6 @@ const QCIndicator = ({ qcResults, showDetails = false, compact = false }: QCIndi
     </div>
   );
 };
+
 
 export default QCIndicator;

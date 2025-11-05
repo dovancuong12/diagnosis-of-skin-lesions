@@ -11,12 +11,12 @@ import {
   PhotoIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline';
-import { Case, CaseListParams } from '../types';
-import { apiClient } from '../lib/api';
-import { API_ENDPOINTS, QUERY_KEYS } from '../constants';
-import { formatDate, formatRelativeTime } from '../utils';
-import ImageCard from '../components/ImageCard';
-import CaseFusionPanel from '../components/CaseFusionPanel';
+import { Case, CaseListParams, ApiResponse, PaginatedResponse } from '../../types';
+import { apiClient } from '../../lib/api';
+import { API_ENDPOINTS, QUERY_KEYS } from '../../constants';
+import { formatDate, formatRelativeTime } from '../../utils';
+import ImageCard from '../results/ImageCard';
+import CaseFusionPanel from './CaseFusionPanel';
 
 const PatientView = () => {
   const { caseId } = useParams<{ caseId?: string }>();
@@ -29,9 +29,9 @@ const PatientView = () => {
   const pageSize = 12;
 
   // Query for case list
-  const { data: casesData, isLoading: casesLoading } = useQuery({
-    queryKey: QUERY_KEYS.cases.concat([searchTerm, statusFilter, sortBy, sortOrder, currentPage]),
-    queryFn: () => {
+  const { data: casesData, isLoading: casesLoading } = useQuery<PaginatedResponse<Case>>({
+    queryKey: ['cases', searchTerm, statusFilter, sortBy, sortOrder, currentPage],
+    queryFn: async () => {
       const params: CaseListParams = {
         page: currentPage,
         pageSize,
@@ -40,7 +40,7 @@ const PatientView = () => {
         sortBy,
         sortOrder,
       };
-      return apiClient.get(API_ENDPOINTS.cases.list, { params });
+      return apiClient.get<PaginatedResponse<Case>>(API_ENDPOINTS.cases.list, { params });
     },
   });
 

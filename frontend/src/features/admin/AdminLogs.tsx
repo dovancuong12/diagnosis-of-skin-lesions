@@ -12,10 +12,10 @@ import {
   UserIcon,
   ComputerDesktopIcon
 } from '@heroicons/react/24/outline';
-import { AuditLog, LogsParams, PaginatedResponse } from '../types';
-import { apiClient } from '../lib/api';
-import { API_ENDPOINTS, QUERY_KEYS } from '../constants';
-import { formatDate, formatRelativeTime, downloadAsJson } from '../utils';
+import { AuditLog, LogsParams, PaginatedResponse } from '../../types';
+import { apiClient } from '../../lib/api';
+import { API_ENDPOINTS, QUERY_KEYS } from '../../constants';
+import { formatDate, formatRelativeTime, downloadAsJson } from '../../utils';
 
 const AdminLogs = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,10 +32,8 @@ const AdminLogs = () => {
 
   // Query for audit logs
   const { data: logsData, isLoading, refetch } = useQuery({
-    queryKey: QUERY_KEYS.logs.concat([
-      searchTerm, actionFilter, resourceFilter, userFilter,
-      dateRange.start, dateRange.end, currentPage
-    ]),
+    queryKey: [...QUERY_KEYS.logs, searchTerm, actionFilter, resourceFilter, userFilter,
+      dateRange.start, dateRange.end, currentPage.toString()],
     queryFn: () => {
       const params: LogsParams = {
         page: currentPage,

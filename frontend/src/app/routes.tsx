@@ -1,9 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import UploadPage from '../pages/UploadPage';
-import ResultsPage from '../pages/ResultsPage';
-import PatientView from '../pages/PatientView';
-import AdminLogs from '../pages/AdminLogs';
+import { UploadPage, ResultsPage, PatientView, AdminLogs } from '../features';
 
 const AppRoutes = () => {
   return (

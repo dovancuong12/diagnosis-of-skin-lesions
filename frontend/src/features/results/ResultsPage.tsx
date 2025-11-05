@@ -9,11 +9,11 @@ import {
   CheckCircleIcon,
   ClockIcon
 } from '@heroicons/react/24/outline';
-import { Case, PredictionJob } from '../types';
-import { apiClient } from '../lib/api';
-import { API_ENDPOINTS, QUERY_KEYS, SKIN_LESION_CLASSES } from '../constants';
-import { getClassInfo, formatConfidence, formatDate } from '../utils';
-import ImageCard from '../components/ImageCard';
+import { Case, PredictionJob } from '../../types';
+import { apiClient } from '../../lib/api';
+import { API_ENDPOINTS, QUERY_KEYS, SKIN_LESION_CLASSES } from '../../constants';
+import { getClassInfo, formatConfidence, formatDate } from '../../utils';
+import ImageCard from './ImageCard';
 import toast from 'react-hot-toast';
 
 const ResultsPage = () => {
