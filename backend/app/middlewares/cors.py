@@ -1,1 +1,0 @@
-# TODO: cấu hình CORS
