@@ -6,9 +6,18 @@ class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
+    // Sử dụng URL từ biến môi trường hoặc URL mặc định
+    let baseURL = '';
+    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) {
+      baseURL = import.meta.env.VITE_API_BASE_URL;
+    } else {
+      // Fallback nếu không có biến môi trường
+      baseURL = 'http://localhost:8000';
+    }
+
     this.client = axios.create({
-      baseURL: import.meta.env.VITE_API_BASE_URL || '',
-      timeout: 30000,
+      baseURL: baseURL,
+      timeout: 60000, // Tăng timeout để xử lý upload file lớn
       headers: {
         'Content-Type': 'application/json',
       },
@@ -38,28 +47,28 @@ class ApiClient {
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.get<ApiResponse<T>>(url, config);
-    return response.data.data;
+    const response = await this.client.get<T>(url, config);
+    return response.data;
   }
 
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.post<ApiResponse<T>>(url, data, config);
-    return response.data.data;
+    const response = await this.client.post<T>(url, data, config);
+    return response.data;
   }
 
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.put<ApiResponse<T>>(url, data, config);
-    return response.data.data;
+    const response = await this.client.put<T>(url, data, config);
+    return response.data;
   }
 
   async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.patch<ApiResponse<T>>(url, data, config);
-    return response.data.data;
+    const response = await this.client.patch<T>(url, data, config);
+    return response.data;
   }
 
   async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.delete<ApiResponse<T>>(url, config);
-    return response.data.data;
+    const response = await this.client.delete<T>(url, config);
+    return response.data;
   }
 
   // File upload with progress
@@ -68,7 +77,8 @@ class ApiClient {
     formData: FormData,
     onProgress?: (progress: number) => void
   ): Promise<T> {
-    const response = await this.client.post<ApiResponse<T>>(url, formData, {
+    // Gọi API mà không có wrapper ApiResponse vì backend trả về trực tiếp dữ liệu
+    const response = await this.client.post<T>(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -79,7 +89,7 @@ class ApiClient {
         }
       },
     });
-    return response.data.data;
+    return response.data;
   }
 
   // Download file

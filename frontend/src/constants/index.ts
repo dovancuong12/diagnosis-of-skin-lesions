@@ -106,18 +106,24 @@ export const API_ENDPOINTS = {
     detail: (id: string) => `/api/v1/images/${id}`,
     qc: (id: string) => `/api/v1/images/${id}/qc`,
     delete: (id: string) => `/api/v1/images/${id}`,
-  },
+ },
   predictions: {
     create: '/api/v1/predictions',
     job: (id: string) => `/api/v1/predictions/jobs/${id}`,
     result: (id: string) => `/api/v1/predictions/${id}`,
     heatmap: (id: string) => `/api/v1/predictions/${id}/heatmap`,
   },
+  ml: {
+    upload: '/api/v1/ml/upload',
+    predict: '/api/v1/ml/predict',
+    predictFromUpload: (filename: string) => `/api/v1/ml/predict-from-upload/${filename}`,
+    history: '/api/v1/ml/predictions/history',
+  },
   models: {
     list: '/api/v1/models',
     active: '/api/v1/models/active',
     info: (id: string) => `/api/v1/models/${id}`,
-  },
+ },
   logs: {
     list: '/api/v1/logs',
     export: '/api/v1/logs/export',
