@@ -1,88 +1,86 @@
-# Hệ Thống Chẩn Đoán Bệnh Da Liễu
+# Skin Lesion Diagnosis System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.68.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18.2-61DAFB.svg?logo=react)](https://reactjs.org/)
 
-Hệ thống chẩn đoán bệnh da liễu dựa trên học sâu sử dụng mô hình EfficientNetB3, cho phép người dùng tải lên một hoặc nhiều hình ảnh để chẩn đoán tự động.
+A deep learning-based skin lesion diagnosis system using EfficientNetB3 model, allowing users to upload one or multiple images for automated diagnosis.
 
-## Tính Năng Chính
+## Key Features
 
-- Hỗ trợ tải lên hình ảnh đơn lẻ hoặc theo lô
-- Phát hiện và chẩn đoán tự động các tổn thương da
-- Xử lý song song nhiều hình ảnh để cải thiện độ chính xác
-- Hệ thống lịch sử trường hợp dựa trên trò chuyện
-- Hỗ trợ đa người dùng với kiểm soát truy cập theo vai trò
-- Giao diện người dùng được tối ưu hóa với chế độ sáng/tối
+- Support for single or batch image uploads
+- Automatic detection and diagnosis of skin lesions
+- Parallel processing of multiple images for improved accuracy
+- Case-based chat history system
+- Multi-user support with role-based access control
+- Optimized UI with light/dark mode
 
-## Kiến Trúc Hệ Thống
+## System Architecture
 
 ```
 diagnosis-of-skin-lesions/
-├── backend/               # Backend FastAPI
+├── backend/               # FastAPI backend
 │   ├── app/               
-│   │   ├── api/           # Các endpoint API
-│   │   ├── core/          # Cấu hình chính
-│   │   ├── db/            # Kết nối cơ sở dữ liệu
-│   │   ├── ml/            # Mô hình học máy
-│   │   └── services/      # Logic nghiệp vụ
-│   └── requirements.txt   # Thư viện Python
+│   │   ├── api/           # API endpoints
+│   │   ├── core/          # Core configuration
+│   │   ├── db/            # Database connections
+│   │   ├── models/        # SQLAlchemy models
+│   │   └── services/      # Business logic
+│   └── requirements.txt   # Python dependencies
 │
-├── frontend/              # Frontend React
+├── frontend/              # React frontend
 │   ├── public/
 │   └── src/
-│       ├── components/    # Các thành phần React
-│       ├── features/      # Các tính năng chính
-│       └── lib/           # Thư viện API
+│       ├── components/    # React components
+│       ├── pages/         # Main pages
+│       └── services/      # API clients
 │
-├── models/                # Mô hình đã huấn luyện
-├── notebooks/             # Notebook huấn luyện
-├── docs/                  # Tài liệu
-└── uploads/               # Thư mục tải lên
+├── models/                # Trained models
+├── training/              # Training scripts
+├── data_pipeline/         # Data processing
+├── infra/                 # Deployment config
+└── tests_e2e/             # Automated tests
 ```
 
-## Bắt Đầu Sử Dụng
+## Getting Started
 
-### Yêu Cầu Hệ Thống
+### Prerequisites
 
 - Python 3.9+
 - PostgreSQL 13+
-- Docker (khuyến nghị)
+- Docker (recommended)
 
-### Cài Đặt Với Docker (Khuyến Nghị)
+### Installation with Docker (Recommended)
 
-1. Sao chép kho lưu trữ:
+1. Clone the repository:
    ```bash
    git clone https://github.com/dovancuong12/diagnosis-of-skin-lesions.git
    cd diagnosis-of-skin-lesions
    ```
 
-2. Tạo tệp `.env` từ ví dụ:
+2. Create `.env` file from example:
    ```bash
-   copy .env.example .env
+   cp .env.example .env
    ```
-   (Trên Windows sử dụng `copy`, trên Linux/Mac sử dụng `cp`)
 
-3. Khởi động dịch vụ:
+3. Start the services:
    ```bash
    docker-compose up -d
    ```
 
-4. Truy cập ứng dụng tại: http://localhost:3000
+4. Access the application at: http://localhost:3000
 
-### Cài Đặt Thủ Công
+### Manual Installation
 
 #### Backend
 
 ```bash
 cd backend
 python -m venv venv
-.\venv\Scripts\activate  # Trên Windows
-# hoặc
-source venv/bin/activate  # Trên Linux/Mac
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
-python -m uvicorn basic_main:app --reload
+uvicorn app.main:app --reload
 ```
 
 #### Frontend
@@ -93,37 +91,37 @@ npm install
 npm run dev
 ```
 
-## Tài Liệu API
+## API Documentation
 
-Xem tài liệu API chi tiết tại: `http://localhost:8000/docs`
+View detailed API documentation at: `http://localhost:8000/docs`
 
-## Chạy Kiểm Thử
+## Running Tests
 
 ```bash
-# Kiểm thử backend
+# Backend tests
 cd backend
 pytest
 
-# Kiểm thử frontend
+# Frontend tests
 cd frontend
 npm test
 ```
 
-## Đóng Góp
+## Contributing
 
-Mọi sự đóng góp luôn được chào đón! Vui lòng đọc [hướng dẫn đóng góp](CONTRIBUTING.md) để biết thêm chi tiết.
+Contributions are always welcome! Please read our [contribution guidelines](CONTRIBUTING.md) for details.
 
-## Giấy Phép
+## License
 
-Dự án này được cấp phép theo Giấy Phép MIT - xem tệp [LICENSE](LICENSE) để biết thêm chi tiết.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Lời Cảm ơn
+## Acknowledgments
 
-- Cảm ơn tất cả [những người đóng góp](https://github.com/dovancuong12/diagnosis-of-skin-lesions/graphs/contributors) đã giúp đỡ cho dự án này.
-- Mô hình được huấn luyện sử dụng [bộ dữ liệu ISIC 2020](https://challenge.isic-archive.com/landing/2020/).
+- Thanks to all [contributors](https://github.com/dovancuong12/diagnosis-of-skin-lesions/graphs/contributors) who helped with this project.
+- Model trained using the [ISIC 2020 dataset](https://challenge.isic-archive.com/landing/2020/).
 
-## Liên Hệ
+## Contact
 
 Do Van Cuong - dovancuong3636@gmail.com
 
-Liên kết Dự Án: [https://github.com/dovancuong12/diagnosis-of-skin-lesions](https://github.com/dovancuong12/diagnosis-of-skin-lesions)
+Project Link: [https://github.com/dovancuong12/diagnosis-of-skin-lesions](https://github.com/dovancuong12/diagnosis-of-skin-lesions)
