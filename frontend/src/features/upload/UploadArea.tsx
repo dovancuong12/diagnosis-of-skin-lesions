@@ -3,8 +3,10 @@ import { useDropzone } from 'react-dropzone';
 import { PhotoIcon, XMarkIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { ImageFile } from '../../types';
 import { validateFileType, validateFileSize, formatFileSize, createImagePreview, generateId } from '../../utils';
-import { UPLOAD_CONFIG } from '../../constants';
+import { UPLOAD_CONFIG, API_ENDPOINTS } from '../../constants';
 import toast from 'react-hot-toast';
+import { apiClient } from '../../lib/api';
+import { UploadResponse, mlApi } from '../../lib/ml-api';
 
 interface UploadAreaProps {
   files: ImageFile[];
@@ -20,6 +22,8 @@ const UploadArea = ({
   disabled = false
 }: UploadAreaProps) => {
   const [dragActive, setDragActive] = useState(false);
+
+  // Hàm upload được gọi từ UploadPage.tsx khi nhấn nút Start Analysis
 
   const onDrop = useCallback(async (acceptedFiles: File[], rejectedFiles: any[]) => {
     setDragActive(false);
@@ -53,7 +57,7 @@ const UploadArea = ({
           id: generateId(),
           file,
           preview,
-          status: 'uploading',
+          status: 'completed', // Trạng thái mặc định là completed, upload sẽ được thực hiện sau
         };
         newFiles.push(imageFile);
       } catch (error) {

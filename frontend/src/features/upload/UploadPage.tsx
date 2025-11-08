@@ -9,6 +9,8 @@ import { apiClient } from '../../lib/api';
 import { API_ENDPOINTS } from '../../constants';
 import UploadArea from './UploadArea';
 import toast from 'react-hot-toast';
+import { mlApi } from '../../lib/ml-api';
+import PredictionResult from './PredictionResult';
 
 const schema = yup.object({
   patientName: yup.string(),
@@ -21,6 +23,7 @@ type PatientFormData = yup.InferType<typeof schema>;
 
 const UploadPage = () => {
   const [files, setFiles] = useState<ImageFile[]>([]);
+  const [predictionResults, setPredictionResults] = useState<Array<{prediction: string, filename: string, originalFile?: File}>>([]);
   const navigate = useNavigate();
 
   const { register, handleSubmit, formState: { errors } } = useForm<PatientFormData>({
@@ -53,11 +56,29 @@ const UploadPage = () => {
       return;
     }
 
-    // In a real app, you would upload files and get back IDs.
-    // Here we'll simulate it.
-    const imageIds = files.map(f => f.id);
-
-    startPrediction({ caseData: data, imageIds });
+    // Process the first file (for simplicity)
+    const file = files[0];
+    try {
+      // Upload the file
+      const uploadResult = await mlApi.uploadImage(file.file);
+      toast.success(`Successfully uploaded: ${file.file.name}`);
+      
+      // Then predict using the uploaded file
+      const predictResult = await mlApi.predictImage(file.file);
+      console.log('Prediction result:', predictResult); // Debug log
+      
+      // Thêm kết quả vào danh sách
+      setPredictionResults(prev => [...prev, {
+        prediction: predictResult.prediction,
+        filename: predictResult.filename,
+        originalFile: file.file
+      }]);
+      toast.success(`Prediction result for ${file.file.name}: ${predictResult.prediction}`);
+    } catch (error) {
+      console.error('Processing error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.error(`Failed to process ${file.file.name}. Error: ${errorMessage}`);
+    }
   };
 
   return (
@@ -153,6 +174,21 @@ const UploadPage = () => {
           </div>
         </form>
       </div>
+      
+      {/* Prediction Results List */}
+      {predictionResults.length > 0 && (
+        <div className="mt-6 space-y-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Prediction Results</h2>
+          {predictionResults.map((result, index) => (
+            <PredictionResult
+              key={index}
+              prediction={result.prediction}
+              filename={result.filename}
+              onNewUpload={() => setPredictionResults([])} // Clear all results to allow new upload
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
