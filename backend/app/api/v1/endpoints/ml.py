@@ -10,7 +10,14 @@ import uuid
 import sys
 from app.ml.efficientnet_model import EfficientNetClassifier
 
+from typing import List, Dict, Optional
+import json
+from datetime import datetime
+
 router = APIRouter()
+
+# In-memory storage for prediction history
+prediction_history: List[Dict] = []
 
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -131,13 +138,32 @@ async def predict_image(file: UploadFile = File(...)):
         # Clean up - remove the temporary file after prediction
         os.remove(file_path)
         
-        return {
+        # Create prediction record
+        prediction_record = {
+            "id": str(uuid.uuid4()),
             "filename": unique_filename,
+            "originalFilename": file.filename,  # Lưu tên file gốc
             "prediction": result_class,
+            "created_at": datetime.now().isoformat(),
             "message": "Prediction completed successfully"
         }
+        
+        # Add to prediction history
+        prediction_history.append(prediction_record)
+        
+        return prediction_record
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+
+@router.get("/predictions/history")
+async def get_prediction_history():
+    """Lấy lịch sử các dự đoán đã thực hiện"""
+    try:
+        # Sắp xếp theo thời gian tạo, mới nhất trước
+        sorted_history = sorted(prediction_history, key=lambda x: x.get('created_at', ''), reverse=True)
+        return {"predictions": sorted_history}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to retrieve prediction history: {str(e)}")
 
 @router.post("/predict-from-upload/{filename}")
 async def predict_from_uploaded_image(filename: str):
@@ -153,11 +179,20 @@ async def predict_from_uploaded_image(filename: str):
         
         result_class = predict_class(model, idx_to_class, img)
         
-        return {
+        # Create prediction record
+        prediction_record = {
+            "id": str(uuid.uuid4()),
             "filename": filename,
+            "originalFilename": filename,  # Trong trường hợp này, tên file chính là tên file được upload
             "prediction": result_class,
+            "created_at": datetime.now().isoformat(),
             "message": "Prediction completed successfully"
         }
+        
+        # Add to prediction history
+        prediction_history.append(prediction_record)
+        
+        return prediction_record
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 from fastapi import APIRouter, UploadFile, File, HTTPException
