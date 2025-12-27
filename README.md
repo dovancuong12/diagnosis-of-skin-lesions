@@ -21,7 +21,7 @@ Hệ thống chẩn đoán bệnh da liễu dựa trên học sâu sử dụng m
 ```
 diagnosis-of-skin-lesions/
 ├── backend/               # Backend FastAPI
-│   ├── app/             
+│   ├── app/       
 │   │   ├── api/           # Các endpoint API
 │   │   ├── core/          # Cấu hình chính
 │   │   ├── db/            # Kết nối cơ sở dữ liệu
@@ -113,18 +113,3 @@ npm test
 ## Đóng Góp
 
 Mọi sự đóng góp luôn được chào đón! Vui lòng đọc [hướng dẫn đóng góp](CONTRIBUTING.md) để biết thêm chi tiết.
-
-## Giấy Phép
-
-Dự án này được cấp phép theo Giấy Phép MIT - xem tệp [LICENSE](LICENSE) để biết thêm chi tiết.
-
-## Lời Cảm ơn
-
-- Cảm ơn tất cả [những người đóng góp](https://github.com/dovancuong12/diagnosis-of-skin-lesions/graphs/contributors) đã giúp đỡ cho dự án này.
-- Mô hình được huấn luyện sử dụng [bộ dữ liệu ISIC 2020](https://challenge.isic-archive.com/landing/2020/).
-
-## Liên Hệ
-
-Do Van Cuong - dovancuong3636@gmail.com
-
-Liên kết Dự Án: [https://github.com/dovancuong12/diagnosis-of-skin-lesions](https://github.com/dovancuong12/diagnosis-of-skin-lesions)
