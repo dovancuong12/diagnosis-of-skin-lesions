@@ -21,7 +21,7 @@ Hệ thống chẩn đoán bệnh da liễu dựa trên học sâu sử dụng m
 ```
 diagnosis-of-skin-lesions/
 ├── backend/               # Backend FastAPI
-│   ├── app/               
+│   ├── app/             
 │   │   ├── api/           # Các endpoint API
 │   │   ├── core/          # Cấu hình chính
 │   │   ├── db/            # Kết nối cơ sở dữ liệu
@@ -53,22 +53,23 @@ diagnosis-of-skin-lesions/
 ### Cài Đặt Với Docker (Khuyến Nghị)
 
 1. Sao chép kho lưu trữ:
+
    ```bash
    git clone https://github.com/dovancuong12/diagnosis-of-skin-lesions.git
    cd diagnosis-of-skin-lesions
    ```
-
 2. Tạo tệp `.env` từ ví dụ:
+
    ```bash
    copy .env.example .env
    ```
-   (Trên Windows sử dụng `copy`, trên Linux/Mac sử dụng `cp`)
 
+   (Trên Windows sử dụng `copy`, trên Linux/Mac sử dụng `cp`)
 3. Khởi động dịch vụ:
+
    ```bash
    docker-compose up -d
    ```
-
 4. Truy cập ứng dụng tại: http://localhost:3000
 
 ### Cài Đặt Thủ Công

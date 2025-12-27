@@ -87,7 +87,6 @@ Thumbs.db
 schemas/
 scripts/
 *.onnx
-*.pth
 *.h5
 *.pb
 *.tflite
