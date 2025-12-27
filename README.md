@@ -16,32 +16,6 @@ Hệ thống chẩn đoán bệnh da liễu dựa trên học sâu sử dụng m
 - Hỗ trợ đa người dùng với kiểm soát truy cập theo vai trò
 - Giao diện người dùng được tối ưu hóa với chế độ sáng/tối
 
-## Kiến Trúc Hệ Thống
-
-```
-diagnosis-of-skin-lesions/
-├── backend/               # Backend FastAPI
-│   ├── app/       
-│   │   ├── api/           # Các endpoint API
-│   │   ├── core/          # Cấu hình chính
-│   │   ├── db/            # Kết nối cơ sở dữ liệu
-│   │   ├── ml/            # Mô hình học máy
-│   │   └── services/      # Logic nghiệp vụ
-│   └── requirements.txt   # Thư viện Python
-│
-├── frontend/              # Frontend React
-│   ├── public/
-│   └── src/
-│       ├── components/    # Các thành phần React
-│       ├── features/      # Các tính năng chính
-│       └── lib/           # Thư viện API
-│
-├── models/                # Mô hình đã huấn luyện
-├── notebooks/             # Notebook huấn luyện
-├── docs/                  # Tài liệu
-└── uploads/               # Thư mục tải lên
-```
-
 ## Bắt Đầu Sử Dụng
 
 ### Yêu Cầu Hệ Thống
